@@ -1,0 +1,16 @@
+name: "Set Assignee"
+on:
+  issues:
+    branches-ignore:
+        - '**'
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Naturalclar/issue-action@v2.0.2
+        with:
+          title-or-body: "both"
+          parameters: '[ {"keywords": [" "], "assignees": ["${{ github.actor }}","urapadmin"]}]'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"

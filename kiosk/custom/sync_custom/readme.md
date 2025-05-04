@@ -1,0 +1,1 @@
+we are using the kiosk defaults for USTP
