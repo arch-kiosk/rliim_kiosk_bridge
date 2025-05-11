@@ -388,6 +388,7 @@ def import_lot_rows(ws: Worksheet, max_rows=-1):
         return alternative
 
     row_nr = 1
+    empty_row = 0
     rows = ws.iter_rows(min_row=2)
     to_delete = []
     successful_rows = 0
@@ -402,8 +403,12 @@ def import_lot_rows(ws: Worksheet, max_rows=-1):
             break
 
         if not row[0].value or not str(row[0].value).strip():
-            print(f"Found empty first cell in row {row_nr}: done.")
-            break
+            empty_row += 1
+            if empty_row < 3:
+                continue
+            else:
+                print(f"Found empty first cell in row {row_nr}: done.")
+                break
 
         max_col = len(row)
         try:
@@ -528,6 +533,7 @@ def import_sample_rows(ws: Worksheet, max_rows=-1):
         return alternative
 
     row_nr = 1
+    empty_row = 0
     rows = ws.iter_rows(min_row=2)
     to_delete = []
     successful_rows = 0
@@ -542,8 +548,12 @@ def import_sample_rows(ws: Worksheet, max_rows=-1):
             break
 
         if not row[0].value or not str(row[0].value).strip():
-            print(f"Found empty first cell in row {row_nr}: done.")
-            break
+            empty_row += 1
+            if empty_row < 3:
+                continue
+            else:
+                print(f"Found empty first cell in row {row_nr}: done.")
+                break
 
         max_col = len(row)
         try:
@@ -701,6 +711,7 @@ def import_artifacts_rows(ws: Worksheet, max_rows=-1):
 
     row_nr = 1
     rows = ws.iter_rows(min_row=2)
+    empty_row = 0
     to_delete = []
     successful_rows = 0
     for row in rows:
@@ -714,8 +725,12 @@ def import_artifacts_rows(ws: Worksheet, max_rows=-1):
             break
 
         if not row[0].value or not str(row[0].value).strip():
-            print(f"Found empty first cell in row {row_nr}: done.")
-            break
+            empty_row += 1
+            if empty_row < 3:
+                continue
+            else:
+                print(f"Found empty first cell in row {row_nr}: done.")
+                break
 
         max_col = len(row)
         try:

@@ -10,7 +10,7 @@ from kiosksqldb import KioskSQLDb
 def import_rliim_cm_for_new_loci(commit=True):
 
     sql_insert = """
-        insert into collected_material(uid_locus, type, description, quantity, isobject, date, storage,
+        insert into collected_material(uid_locus, type, description, quantity, weight, isobject, date, storage,
                                status_todo, status_done, dearregistrar, created, modified, modified_tz, modified_ww,
                                modified_by, arch_domain, arch_context,
                                cm_type)
@@ -18,6 +18,7 @@ def import_rliim_cm_for_new_loci(commit=True):
                rliim.type, 
                concat_ws(' ', rliim.description, rliim.sf_description, case when rliim.sf_diameter_perf_mm is null then null else 'diameter perf.: ' || rliim.sf_diameter_perf_mm end),
                rliim.count,  
+               rliim.sf_weight,
                CASE WHEN rliim.cm_type = 'small_find' THEN 1 ELSE 0 END as isobject,
                coalesce(rliim.sf_date_excavated, rliim.date_excavated), 
                rliim.location, 
@@ -34,15 +35,14 @@ def import_rliim_cm_for_new_loci(commit=True):
         from rliim_cm_import rliim
              inner join locus on rliim.locus = locus.arch_context
              left outer join collected_material on rliim.arch_context = collected_material.arch_context
-        where collected_material.arch_context is null and rliim.locus is not null;
+        where collected_material.arch_context is null;
     """
 
     sql_add_small_finds = """
         insert into small_find(uid_cm, material,
-                               length, width, thickness, weight, height, diameter, id_registrar, created,
+                               length, width, thickness, height, diameter, id_registrar, created,
                                modified, modified_tz, modified_ww, modified_by)
         select cm.uid, rliim.sf_type, rliim.sf_length_mm, rliim.sf_width_mm, rliim.sf_thickness_mm, 
-               rliim.sf_weight, 
                rliim.sf_height_mm, rliim.sf_diameter_mm, 'admin', 
                coalesce(rliim.sf_date_entered, now() at time zone 'US/Eastern'), 
                case when rliim.sf_date_entered is null then now() else rliim.sf_date_entered end, 
